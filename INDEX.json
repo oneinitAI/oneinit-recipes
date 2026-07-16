@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "last_updated": "2026-07-16T10:05:00Z",
+  "packages": {
+    "node20": {
+      "description": "Node.js 20 LTS with npm + npmmirror auto-config",
+      "latest": "20.18.1",
+      "versions": ["20.18.1"],
+      "tags": ["runtime", "javascript"],
+      "maintainers": ["BG4JTS"]
+    }
+  }
+}
