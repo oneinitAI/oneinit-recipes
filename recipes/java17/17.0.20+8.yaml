@@ -1,0 +1,48 @@
+name: java17
+version: "17.0.20+8"
+description: "Temurin JDK 17 (LTS) with Maven Aliyun mirror"
+
+platforms:
+  windows:
+    url: "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20%2B8/OpenJDK17U-jdk_x64_windows_hotspot_17.0.20_8.zip"
+    sha256: "418497be5cf585bdd2203d6486a565d66d3f5e992d5630d45104cb873fab8122"
+    install_type: "zip_extract"
+    install_path: "java17"
+    path_add: ["{{install_dir}}/jdk-17.0.20+8/bin"]
+  linux:
+    url: "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20%2B8/OpenJDK17U-jdk_x64_linux_hotspot_17.0.20_8.tar.gz"
+    sha256: "be7668bc030d578b83d6d5ef9221d6d6729bbbca8cf94a7d52e16ac68b5a5a35"
+    install_type: "tar_extract"
+    install_path: "java17"
+    path_add: ["{{install_dir}}/jdk-17.0.20+8/bin"]
+  darwin:
+    url: "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20%2B8/OpenJDK17U-jdk_x64_mac_hotspot_17.0.20_8.tar.gz"
+    sha256: "3710c3131c5d7c090582b357f1310133a90bf701183d065223f1a0b90b9ed5ae"
+    install_type: "tar_extract"
+    install_path: "java17"
+    path_add: ["{{install_dir}}/jdk-17.0.20+8/Contents/Home/bin"]
+
+post_install:
+  config_files:
+    - path: "{{user_home}}/.m2/settings.xml"
+      template: |
+        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+          <mirrors>
+            <mirror>
+              <id>aliyun</id>
+              <mirrorOf>*</mirrorOf>
+              <name>Aliyun Maven Mirror</name>
+              <url>https://maven.aliyun.com/repository/public</url>
+            </mirror>
+          </mirrors>
+        </settings>
+
+tags:
+  - "runtime"
+  - "java"
+
+maintainer:
+  name: "BG4JTS"
+  github: "BG4JTS"

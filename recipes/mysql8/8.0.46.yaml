@@ -1,0 +1,29 @@
+name: mysql8
+version: "8.0.46"
+description: "MySQL Community Server 8.0 with data directory config"
+
+platforms:
+  windows:
+    url: "https://cdn.mysql.com/Downloads/MySQL-8.0/mysql-8.0.46-winx64.zip"
+    sha256: "28e9eda019d88eff4478d811ea2110b83f02a3966be157fe91cc55def3ab0d4d"
+    install_type: "zip_extract"
+    install_path: "mysql8"
+    path_add: ["{{install_dir}}/mysql-8.0.46-winx64/bin"]
+
+post_install:
+  config_files:
+    - path: "{{install_dir}}/mysql-8.0.46-winx64/my.ini"
+      template: |
+        [mysqld]
+        basedir={{install_dir}}/mysql-8.0.46-winx64
+        datadir={{install_dir}}/mysql-8.0.46-winx64/data
+        port=3306
+        character-set-server=utf8mb4
+
+tags:
+  - "database"
+  - "mysql"
+
+maintainer:
+  name: "BG4JTS"
+  github: "BG4JTS"

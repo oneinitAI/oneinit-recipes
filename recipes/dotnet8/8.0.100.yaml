@@ -1,0 +1,44 @@
+name: dotnet8
+version: "8.0.100"
+description: ".NET SDK 8 (C#) with NuGet cnblogs mirror"
+
+platforms:
+  windows:
+    url: "https://dotnetcli.azureedge.net/dotnet/Sdk/8.0.100/dotnet-sdk-8.0.100-win-x64.zip"
+    sha256: "69ee73c56c78c94c186c0fd1b06ce1a7325979f7680857dc1a05d516feb9f0ffe990c2c0441caed1de98a0d0ae3923cc3e04525f91d96306d611e481a24f9fb4"
+    install_type: "zip_extract"
+    install_path: "dotnet8"
+    path_add: ["{{install_dir}}"]
+  linux:
+    url: "https://dotnetcli.azureedge.net/dotnet/Sdk/8.0.100/dotnet-sdk-8.0.100-linux-x64.tar.gz"
+    sha256: "13905ea20191e70baeba50b0e9bbe5f752a7c34587878ee104744f9fb453bfe439994d38969722bdae7f60ee047d75dda8636f3ab62659450e9cd4024f38b2a5"
+    install_type: "tar_extract"
+    install_path: "dotnet8"
+    path_add: ["{{install_dir}}"]
+  darwin:
+    url: "https://dotnetcli.azureedge.net/dotnet/Sdk/8.0.100/dotnet-sdk-8.0.100-osx-x64.tar.gz"
+    sha256: "8ab6a1408e630a7f689414ad062191558c363f8fb8a98b6571ed99d386c07951655c6a499f8b8a4b128d4f566b7a67b6e8be26cda751d9286851b603096d0da2"
+    install_type: "tar_extract"
+    install_path: "dotnet8"
+    path_add: ["{{install_dir}}"]
+
+post_install:
+  config_files:
+    - path: "{{user_home}}/.nuget/NuGet/NuGet.Config"
+      template: |
+        <?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+          <packageSources>
+            <clear />
+            <add key="nuget-cn" value="https://nuget.cdn.azure.cn/v3/index.json" />
+          </packageSources>
+        </configuration>
+
+tags:
+  - "runtime"
+  - "csharp"
+  - "dotnet"
+
+maintainer:
+  name: "BG4JTS"
+  github: "BG4JTS"
