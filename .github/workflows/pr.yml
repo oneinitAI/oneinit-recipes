@@ -2,16 +2,8 @@ name: Validate Recipes
 
 on:
   pull_request:
-    paths:
-      - "recipes/**"
-      - "INDEX.json"
-      - "scripts/**"
   push:
     branches: [main]
-    paths:
-      - "recipes/**"
-      - "INDEX.json"
-      - "scripts/**"
 
 jobs:
   validate:
