@@ -1,6 +1,26 @@
 # OneInit Recipes
 
-Community recipe registry for [OneInit](https://github.com/BG4JTS/oneinit).
+Community recipe registry for [OneInit](https://github.com/oneinitAI/oneinit).
+
+## CI/CD
+
+Every pull request and push is automatically validated by GitHub Actions
+(`.github/workflows/pr.yml`):
+
+- **Recipe schema** — YAML structure, `name`/`version` match the path,
+  `platforms` non-empty, `url` is http(s), `sha256` is 64-char lowercase hex,
+  `install_type` is supported, `maintainer.github` present
+- **INDEX.json consistency** — every package/version in the index has a
+  recipe file, and every recipe file is listed in the index; `latest` must be
+  in `versions`
+- **Sorted index** — `INDEX.json` packages must be alphabetically sorted
+
+Run locally:
+
+```bash
+python -m pip install pyyaml
+python scripts/validate.py
+```
 
 ## Structure
 

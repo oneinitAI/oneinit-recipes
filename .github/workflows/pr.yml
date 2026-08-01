@@ -1,0 +1,54 @@
+name: Validate Recipes
+
+on:
+  pull_request:
+    paths:
+      - "recipes/**"
+      - "INDEX.json"
+      - "scripts/**"
+  push:
+    branches: [main]
+    paths:
+      - "recipes/**"
+      - "INDEX.json"
+      - "scripts/**"
+
+jobs:
+  validate:
+    name: Validate registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Run validation
+        run: python scripts/validate.py
+
+  # Keep INDEX.json sorted/stable — reject messy PRs
+  consistency:
+    name: INDEX.json consistency
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify INDEX.json parses & packages are sorted
+        run: |
+          python - <<'EOF'
+          import json, sys
+          with open("INDEX.json", encoding="utf-8") as f:
+              data = json.load(f)
+          names = list(data.get("packages", {}).keys())
+          if names != sorted(names):
+              print(f"ERROR: packages must be alphabetically sorted: {names}")
+              sys.exit(1)
+          print(f"OK: {len(names)} packages, sorted")
+          EOF
