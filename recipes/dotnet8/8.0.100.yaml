@@ -1,6 +1,8 @@
 name: dotnet8
 version: "8.0.100"
 description: ".NET SDK 8 (C#) with NuGet cnblogs mirror"
+license: "MIT"
+license_url: "https://github.com/dotnet/sdk/blob/main/LICENSE.txt"
 
 platforms:
   windows:

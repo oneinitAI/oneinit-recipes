@@ -57,6 +57,8 @@ oneinit install <package-name>
 name: my-tool
 version: "1.0.0"
 description: "A tool description"
+license: "MIT"                       # 软件许可证（安装前展示）
+license_url: "https://example.com/LICENSE"  # 许可证详情 URL（可选）
 
 platforms:
   windows:
@@ -88,6 +90,13 @@ maintainer:
 - `{{mirror_pip}}` - `https://pypi.tuna.tsinghua.edu.cn/simple`
 - `{{mirror_pip_host}}` - `pypi.tuna.tsinghua.edu.cn`
 - `{{mirror_npm}}` - `https://registry.npmmirror.com`
+
+### License fields (recommended)
+
+Add `license` (SPDX identifier, e.g. `MIT`, `GPL-2.0`, `Apache-2.0`) and
+`license_url` to every recipe. OneInit displays them in the `[SECURITY]`
+confirmation prompt before installation so users can make an informed choice.
+Both fields are optional but strongly encouraged.
 
 ### Supported install_type
 

@@ -1,6 +1,8 @@
 name: rust
 version: "stable"
 description: "Rust toolchain via rustup with rsproxy.cn cargo mirror"
+license: "MIT OR Apache-2.0"
+license_url: "https://github.com/rust-lang/rustup#license"
 
 platforms:
   windows:
