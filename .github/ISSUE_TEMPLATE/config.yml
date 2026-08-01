@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📦 配方列表
+    url: https://github.com/oneinitAI/oneinit-recipes/blob/main/INDEX.json
+    about: 查看已收录的配方
+  - name: 🖥 oneinit 主仓库
+    url: https://github.com/oneinitAI/oneinit
+    about: 主程序 bug / 功能建议请提到主仓库

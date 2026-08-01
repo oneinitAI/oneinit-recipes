@@ -1,0 +1,48 @@
+name: 📦 Recipe Request
+description: 请求添加新配方到注册表
+labels: [recipe]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提交前请检查 [INDEX.json](https://github.com/oneinitAI/oneinit-recipes/blob/main/INDEX.json) 是否已存在。
+        推荐直接提交 PR（有 CI 自动校验格式），模板见 [README](https://github.com/oneinitAI/oneinit-recipes#contribute-a-recipe)。
+  - type: input
+    id: package
+    attributes:
+      label: 包名
+      description: 例如 node20、rust
+      placeholder: my-tool
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: 官方下载地址
+      placeholder: https://...
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 平台
+      multiple: true
+      options:
+        - Windows
+        - Linux
+        - macOS
+    validations:
+      required: true
+  - type: textarea
+    id: mirror
+    attributes:
+      label: 镜像源建议
+      description: 该工具的包管理器镜像（如 pip→清华源、npm→淘宝源）
+      placeholder: 如果不确定可留空
