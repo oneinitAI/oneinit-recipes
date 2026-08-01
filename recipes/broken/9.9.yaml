@@ -1,0 +1,8 @@
+name: broken
+version: "9.9"
+platforms:
+  windows:
+    url: "ftp://bad"
+    sha256: "zz"
+    install_type: "zip_extract"
+    install_path: "x"
