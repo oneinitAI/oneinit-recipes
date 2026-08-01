@@ -112,6 +112,20 @@ def validate_recipe(path: Path) -> None:
     if not isinstance(maintainer, dict) or not maintainer.get("github"):
         error(f"{path}: `maintainer.github` is required")
 
+    # license 字段（可选，但若提供需合法）
+    license_name = data.get("license")
+    license_url = data.get("license_url")
+    if license_name is not None and not isinstance(license_name, str):
+        error(f"{path}: `license` must be a string")
+    if license_url is not None:
+        if not isinstance(license_url, str) or not license_url.startswith(
+            ("https://", "http://")
+        ):
+            error(f"{path}: `license_url` must be an http(s) URL")
+    if license_url and not license_name:
+        # 只有 URL 也可以（提示查看）
+        pass
+
 
 def validate_index() -> None:
     """Validate INDEX.json against the recipes/ directory."""

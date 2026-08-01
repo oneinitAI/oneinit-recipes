@@ -1,6 +1,8 @@
 name: node20
 version: "20.18.1"
 description: "Node.js 20 LTS with npm + npmmirror auto-config"
+license: "MIT"
+license_url: "https://github.com/nodejs/node/blob/main/LICENSE"
 
 platforms:
   windows:
