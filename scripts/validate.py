@@ -38,6 +38,7 @@ VALID_INSTALL_TYPES = {
 }
 
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+SHA512_RE = re.compile(r"^[0-9a-f]{128}$")
 
 errors: list[str] = []
 
@@ -92,9 +93,13 @@ def validate_recipe(path: Path) -> None:
         if not isinstance(url, str) or not url.startswith(("https://", "http://")):
             error(f"{path}: platform '{plat}' has invalid `url`")
         sha = cfg.get("sha256")
-        if not sha or not isinstance(sha, str) or not SHA256_RE.match(sha):
+        sha_valid = (
+            isinstance(sha, str)
+            and (SHA256_RE.match(sha) or SHA512_RE.match(sha))
+        )
+        if not sha_valid:
             error(f"{path}: platform '{plat}' has invalid `sha256` "
-                  f"(expect 64-char lowercase hex, got {sha!r})")
+                  f"(expect 64-char hex SHA256 or 128-char hex SHA512, got {sha!r})")
         itype = cfg.get("install_type")
         if itype not in VALID_INSTALL_TYPES:
             error(f"{path}: platform '{plat}' has unsupported `install_type` "
