@@ -3,6 +3,12 @@ version: "2.97.0"
 description: "GitHub CLI — work with GitHub from the command line"
 license: "MIT"
 license_url: "https://github.com/cli/cli/blob/trunk/LICENSE"
+dynamic:
+  repo: cli/cli
+  asset_pattern: "gh_{version}_{os}_{arch}.{ext}"
+  checksum: "checksums.txt"
+  bin_subdir: "bin"
+# platforms 为 fallback；macOS 资产名（gh_2.97.0_macOS_amd64.zip）由模糊匹配处理
 platforms:
   windows:
     url: "https://github.com/cli/cli/releases/download/v2.97.0/gh_2.97.0_windows_amd64.zip"

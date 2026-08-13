@@ -131,6 +131,22 @@ def validate_recipe(path: Path) -> None:
     if verified is not None and not isinstance(verified, bool):
         error(f"{path}: `verified` must be a boolean (true/false)")
 
+    # dynamic 字段（可选）：GitHub Release 动态配方
+    dynamic = data.get("dynamic")
+    if dynamic is not None:
+        if not isinstance(dynamic, dict):
+            error(f"{path}: `dynamic` must be a mapping")
+        else:
+            repo = dynamic.get("repo")
+            if not isinstance(repo, str) or "/" not in repo:
+                error(f"{path}: `dynamic.repo` must be owner/repo (e.g. BurntSushi/ripgrep)")
+            pattern = dynamic.get("asset_pattern", "")
+            if "{version}" not in pattern:
+                error(f"{path}: `dynamic.asset_pattern` must contain {{version}} placeholder")
+            checksum = dynamic.get("checksum", "")
+            if checksum not in ("", "asset.sha256", "checksums.txt"):
+                error(f"{path}: `dynamic.checksum` must be asset.sha256 / checksums.txt / empty")
+
 
 def validate_index() -> None:
     """Validate INDEX.json against the recipes/ directory."""

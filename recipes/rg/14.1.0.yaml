@@ -3,6 +3,12 @@ version: "14.1.0"
 description: "ripgrep — recursively searches directories for a regex pattern"
 license: "Unlicense OR MIT"
 license_url: "https://github.com/BurntSushi/ripgrep/blob/master/COPYING"
+dynamic:
+  repo: BurntSushi/ripgrep
+  asset_pattern: "ripgrep-{version}-{os}-{arch}.{ext}"
+  checksum: "asset.sha256"
+  bin_subdir: ""
+# platforms 为 fallback（指定精确版本且动态解析失败时回退），版本由 dynamic 实时解析
 platforms:
   windows:
     url: "https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep-14.1.0-x86_64-pc-windows-msvc.zip"
