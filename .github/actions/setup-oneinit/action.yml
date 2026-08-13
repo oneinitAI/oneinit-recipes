@@ -1,0 +1,48 @@
+name: Setup oneinit
+description: "Download the oneinit binary (latest release or nightly) into a temp dir"
+
+inputs:
+  version:
+    description: "Release tag to fetch: latest | nightly"
+    required: false
+    default: "latest"
+
+outputs:
+  bin-path:
+    description: "Absolute path to the oneinit binary"
+
+runs:
+  using: composite
+  steps:
+    - name: Download oneinit
+      shell: bash
+      run: |
+        TAG="${{ inputs.version }}"
+        if [ "$TAG" = "latest" ]; then
+          TAG=$(curl -fsSL https://api.github.com/repos/oneinitAI/oneinit/releases/latest \
+            | python3 -c "import json,sys;print(json.load(sys.stdin)['tag_name'])")
+        fi
+        echo "fetching oneinit ${TAG}"
+        if [ "$TAG" = "nightly" ]; then
+          PREFIX="oneinit-nightly"
+          RELEASE_TAG="nightly"
+        else
+          PREFIX="oneinit-${TAG}"
+          RELEASE_TAG="${TAG}"
+        fi
+        DEST="${RUNNER_TEMP}/oneinit-setup"
+        rm -rf "$DEST"; mkdir -p "$DEST"
+        if [ "$RUNNER_OS" = "Windows" ]; then
+          ASSET="${PREFIX}-windows-x86_64.zip"
+          curl -fsSL -o "$DEST/oneinit.zip" \
+            "https://github.com/oneinitAI/oneinit/releases/download/${RELEASE_TAG}/${ASSET}"
+          cd "$DEST" && unzip -o -q oneinit.zip && rm oneinit.zip
+        else
+          ASSET="${PREFIX}-linux-x86_64.tar.gz"
+          curl -fsSL -o "$DEST/oneinit.tgz" \
+            "https://github.com/oneinitAI/oneinit/releases/download/${RELEASE_TAG}/${ASSET}"
+          tar xzf "$DEST/oneinit.tgz" -C "$DEST" && rm "$DEST/oneinit.tgz"
+        fi
+        BIN=$(find "$DEST" -maxdepth 4 -type f \( -name oneinit -o -name oneinit.exe \) | head -1)
+        test -n "$BIN" || { echo "::error::oneinit binary not found (tag=${TAG})"; exit 1; }
+        echo "bin-path=$BIN" >> "$GITHUB_OUTPUT"

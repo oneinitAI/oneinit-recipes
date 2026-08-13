@@ -79,29 +79,16 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - name: Download oneinit binary
-        shell: bash
-        run: |
-          TAG=$(curl -fsSL https://api.github.com/repos/oneinitAI/oneinit/releases/latest \
-            | python3 -c "import json,sys;print(json.load(sys.stdin)['tag_name'])")
-          echo "using oneinit ${TAG}"
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            ASSET="oneinit-${TAG}-windows-x86_64.zip"
-            curl -fsSL -o /tmp/oneinit.zip "https://github.com/oneinitAI/oneinit/releases/download/${TAG}/${ASSET}"
-            mkdir -p /tmp/oneinit
-            cd /tmp/oneinit && unzip -o -q ../oneinit.zip
-          else
-            ASSET="oneinit-${TAG}-linux-x86_64.tar.gz"
-            curl -fsSL -o /tmp/oneinit.tgz "https://github.com/oneinitAI/oneinit/releases/download/${TAG}/${ASSET}"
-            mkdir -p /tmp/oneinit
-            tar xzf /tmp/oneinit.tgz -C /tmp/oneinit
-          fi
+      - name: Setup oneinit
+        id: setup
+        uses: ./.github/actions/setup-oneinit
+        with:
+          version: latest
 
       - name: Dry-run install every recipe
         shell: bash
         run: |
-          BIN=$(find /tmp/oneinit -maxdepth 3 -type f \( -name oneinit -o -name oneinit.exe \) | head -1)
-          test -n "$BIN" || { echo "::error::oneinit binary not found in release asset"; exit 1; }
+          BIN="${{ steps.setup.outputs.bin-path }}"
           export ONEINIT_HOME="$(pwd)/.oneinit-ci"
           mkdir -p "$ONEINIT_HOME/recipes" "$ONEINIT_HOME/cache"
           cp recipes/*/*.yaml "$ONEINIT_HOME/recipes/"
