@@ -14,15 +14,15 @@ on:
       - "INDEX.json"
       - "scripts/**"
 
-# 作者豁免：BG4JTS（本项目作者/维护者账号）的提交跳过检查，加速单人维护；
-# 社区贡献者的 PR 全量检查。
+# 作者豁免：BG4JTS（作者/维护者）与 oneinitAI（组织/机器人账号）的提交跳过检查，
+# 加速单人维护；社区贡献者的 PR 全量检查。
 permissions:
   contents: read
 
 jobs:
   validate:
     name: Validate registry
-    if: github.actor != 'BG4JTS'
+    if: github.actor != 'BG4JTS' && github.actor != 'oneinitAI'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -43,7 +43,7 @@ jobs:
   # Keep INDEX.json sorted/stable — reject messy PRs
   consistency:
     name: INDEX.json consistency
-    if: github.actor != 'BG4JTS'
+    if: github.actor != 'BG4JTS' && github.actor != 'oneinitAI'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -69,7 +69,7 @@ jobs:
   # ============================================================
   dryrun:
     name: Install dry-run (${{ matrix.os }})
-    if: github.actor != 'BG4JTS'
+    if: github.actor != 'BG4JTS' && github.actor != 'oneinitAI'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
