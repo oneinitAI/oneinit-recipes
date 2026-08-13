@@ -126,6 +126,11 @@ def validate_recipe(path: Path) -> None:
         # 只有 URL 也可以（提示查看）
         pass
 
+    # verified 字段（可选，bool；作者自标 + CI 复核）
+    verified = data.get("verified")
+    if verified is not None and not isinstance(verified, bool):
+        error(f"{path}: `verified` must be a boolean (true/false)")
+
 
 def validate_index() -> None:
     """Validate INDEX.json against the recipes/ directory."""

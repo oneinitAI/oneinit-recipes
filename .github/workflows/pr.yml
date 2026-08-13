@@ -44,3 +44,51 @@ jobs:
               sys.exit(1)
           print(f"OK: {len(names)} packages, sorted")
           EOF
+
+  # ============================================================
+  # 安装计划验证：下载最新 oneinit 二进制，对每个配方跑 install --dry-run
+  # （不实际下载/安装，仅验证配方可解析、计划可生成）
+  # ============================================================
+  dryrun:
+    name: Install dry-run (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download oneinit binary
+        shell: bash
+        run: |
+          TAG=$(curl -fsSL https://api.github.com/repos/oneinitAI/oneinit/releases/latest \
+            | python3 -c "import json,sys;print(json.load(sys.stdin)['tag_name'])")
+          echo "using oneinit ${TAG}"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            ASSET="oneinit-${TAG}-windows-x86_64.zip"
+            curl -fsSL -o /tmp/oneinit.zip "https://github.com/oneinitAI/oneinit/releases/download/${TAG}/${ASSET}"
+            mkdir -p /tmp/oneinit
+            cd /tmp/oneinit && unzip -o -q ../oneinit.zip
+          else
+            ASSET="oneinit-${TAG}-linux-x86_64.tar.gz"
+            curl -fsSL -o /tmp/oneinit.tgz "https://github.com/oneinitAI/oneinit/releases/download/${TAG}/${ASSET}"
+            mkdir -p /tmp/oneinit
+            tar xzf /tmp/oneinit.tgz -C /tmp/oneinit
+          fi
+
+      - name: Dry-run install every recipe
+        shell: bash
+        run: |
+          BIN=$(find /tmp/oneinit -maxdepth 3 -type f \( -name oneinit -o -name oneinit.exe \) | head -1)
+          test -n "$BIN" || { echo "::error::oneinit binary not found in release asset"; exit 1; }
+          export ONEINIT_HOME="$(pwd)/.oneinit-ci"
+          mkdir -p "$ONEINIT_HOME/recipes" "$ONEINIT_HOME/cache"
+          cp recipes/*/*.yaml "$ONEINIT_HOME/recipes/"
+          echo '{"version":1,"last_updated":"2026-01-01T00:00:00Z","packages":{}}' > "$ONEINIT_HOME/cache/INDEX.json"
+          echo "{\"registry_url\":\"http://127.0.0.1:1/\",\"subscriptions\":[],\"last_update\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "$ONEINIT_HOME/registry.json"
+          for recipe in recipes/*/*.yaml; do
+            name=$(basename "$(dirname "$recipe")")
+            echo "== dry-run: $name =="
+            "$BIN" install "$name" --dry-run || { echo "::error::install dry-run failed for $name"; exit 1; }
+          done

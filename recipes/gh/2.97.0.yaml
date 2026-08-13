@@ -1,0 +1,31 @@
+name: gh
+version: "2.97.0"
+description: "GitHub CLI — work with GitHub from the command line"
+license: "MIT"
+license_url: "https://github.com/cli/cli/blob/trunk/LICENSE"
+platforms:
+  windows:
+    url: "https://github.com/cli/cli/releases/download/v2.97.0/gh_2.97.0_windows_amd64.zip"
+    sha256: "35d7fe05c4dd1411ffda1e73dfc7c6f44b75c936ca51fa6595c657fdc0350cec"
+    install_type: "zip_extract"
+    install_path: "gh"
+    path_add: ["{{install_dir}}/gh_2.97.0_windows_amd64/bin"]
+  linux:
+    url: "https://github.com/cli/cli/releases/download/v2.97.0/gh_2.97.0_linux_amd64.tar.gz"
+    sha256: "a2c9b8497e1f85b1ad0dfcb78b5a622e098801b8e461e459e88e1ee12f018112"
+    install_type: "tar_extract"
+    install_path: "gh"
+    path_add: ["{{install_dir}}/gh_2.97.0_linux_amd64/bin"]
+  darwin:
+    url: "https://github.com/cli/cli/releases/download/v2.97.0/gh_2.97.0_macOS_amd64.zip"
+    sha256: "63298c998cc2a924c9e254c6af6a1caad6ece281122687a91f079bc0a462700e"
+    install_type: "zip_extract"
+    install_path: "gh"
+    path_add: ["{{install_dir}}/gh_2.97.0_macOS_amd64/bin"]
+tags:
+  - "cli"
+  - "github"
+maintainer:
+  name: "BG4JTS"
+  github: "BG4JTS"
+verified: false

@@ -9,6 +9,13 @@
       "tags": ["runtime", "csharp", "dotnet"],
       "maintainers": ["BG4JTS"]
     },
+    "gh": {
+      "description": "GitHub CLI — work with GitHub from the command line",
+      "latest": "2.97.0",
+      "versions": ["2.97.0"],
+      "tags": ["cli", "github"],
+      "maintainers": ["BG4JTS"]
+    },
     "java17": {
       "description": "Temurin JDK 17 (LTS) with Maven Aliyun mirror",
       "latest": "17.0.20+8",
@@ -28,6 +35,13 @@
       "latest": "20.18.1",
       "versions": ["20.18.1"],
       "tags": ["runtime", "javascript", "typescript"],
+      "maintainers": ["BG4JTS"]
+    },
+    "rg": {
+      "description": "ripgrep — recursively searches directories for a regex pattern",
+      "latest": "14.1.0",
+      "versions": ["14.1.0"],
+      "tags": ["cli", "search"],
       "maintainers": ["BG4JTS"]
     },
     "rust": {

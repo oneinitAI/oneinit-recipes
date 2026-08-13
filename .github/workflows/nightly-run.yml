@@ -1,0 +1,57 @@
+name: Nightly Install Verify
+
+on:
+  schedule:
+    # UTC 20:00 = 北京时间 04:00
+    - cron: "0 20 * * *"
+  workflow_dispatch:
+
+jobs:
+  install-verified:
+    name: Install verified recipes (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download oneinit binary
+        shell: bash
+        run: |
+          TAG=$(curl -fsSL https://api.github.com/repos/oneinitAI/oneinit/releases/latest \
+            | python3 -c "import json,sys;print(json.load(sys.stdin)['tag_name'])")
+          echo "using oneinit ${TAG}"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            ASSET="oneinit-${TAG}-windows-x86_64.zip"
+            curl -fsSL -o /tmp/oneinit.zip "https://github.com/oneinitAI/oneinit/releases/download/${TAG}/${ASSET}"
+            mkdir -p /tmp/oneinit
+            cd /tmp/oneinit && unzip -o -q ../oneinit.zip
+          else
+            ASSET="oneinit-${TAG}-linux-x86_64.tar.gz"
+            curl -fsSL -o /tmp/oneinit.tgz "https://github.com/oneinitAI/oneinit/releases/download/${TAG}/${ASSET}"
+            mkdir -p /tmp/oneinit
+            tar xzf /tmp/oneinit.tgz -C /tmp/oneinit
+          fi
+
+      - name: Install all verified recipes
+        shell: bash
+        run: |
+          BIN=$(find /tmp/oneinit -maxdepth 3 -type f \( -name oneinit -o -name oneinit.exe \) | head -1)
+          test -n "$BIN" || { echo "::error::oneinit binary not found in release asset"; exit 1; }
+          export ONEINIT_HOME="$(pwd)/.oneinit-nightly"
+          mkdir -p "$ONEINIT_HOME/recipes" "$ONEINIT_HOME/cache"
+          cp recipes/*/*.yaml "$ONEINIT_HOME/recipes/"
+          echo '{"version":1,"last_updated":"2026-01-01T00:00:00Z","packages":{}}' > "$ONEINIT_HOME/cache/INDEX.json"
+          echo "{\"registry_url\":\"http://127.0.0.1:1/\",\"subscriptions\":[],\"last_update\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "$ONEINIT_HOME/registry.json"
+          verified=0
+          for recipe in recipes/*/*.yaml; do
+            if grep -q "verified: true" "$recipe"; then
+              name=$(basename "$(dirname "$recipe")")
+              echo "== install (verified): $name =="
+              "$BIN" -y install "$name" || { echo "::error::real install failed for $name"; exit 1; }
+              verified=$((verified+1))
+            fi
+          done
+          echo "installed ${verified} verified recipe(s)"
