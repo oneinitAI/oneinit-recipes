@@ -10,12 +10,13 @@ jobs:
   install-verified:
     name: Install verified recipes (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Download oneinit binary
         shell: bash
@@ -47,7 +48,8 @@ jobs:
           echo "{\"registry_url\":\"http://127.0.0.1:1/\",\"subscriptions\":[],\"last_update\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "$ONEINIT_HOME/registry.json"
           verified=0
           for recipe in recipes/*/*.yaml; do
-            if grep -q "verified: true" "$recipe"; then
+            # 宽松匹配 verified: true（容忍空格差异）
+            if grep -qE "verified:\s*true" "$recipe"; then
               name=$(basename "$(dirname "$recipe")")
               echo "== install (verified): $name =="
               "$BIN" -y install "$name" || { echo "::error::real install failed for $name"; exit 1; }

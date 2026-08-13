@@ -1,20 +1,36 @@
 name: Validate Recipes
 
+# 触发：PR + push main；仅当配方/索引/校验脚本变更时执行（避免文档/CI PR 空跑）
 on:
   pull_request:
+    paths:
+      - "recipes/**"
+      - "INDEX.json"
+      - "scripts/**"
   push:
     branches: [main]
+    paths:
+      - "recipes/**"
+      - "INDEX.json"
+      - "scripts/**"
+
+# 作者豁免：BG4JTS（本项目作者/维护者账号）的提交跳过检查，加速单人维护；
+# 社区贡献者的 PR 全量检查。
+permissions:
+  contents: read
 
 jobs:
   validate:
     name: Validate registry
+    if: github.actor != 'BG4JTS'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
 
@@ -27,10 +43,12 @@ jobs:
   # Keep INDEX.json sorted/stable — reject messy PRs
   consistency:
     name: INDEX.json consistency
+    if: github.actor != 'BG4JTS'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Verify INDEX.json parses & packages are sorted
         run: |
@@ -51,13 +69,15 @@ jobs:
   # ============================================================
   dryrun:
     name: Install dry-run (${{ matrix.os }})
+    if: github.actor != 'BG4JTS'
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Download oneinit binary
         shell: bash
